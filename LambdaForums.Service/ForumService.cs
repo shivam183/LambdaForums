@@ -19,12 +19,19 @@ namespace LambdaForums.Service
 
         public Task Create(Forum forum)
         {
-            throw new NotImplementedException();
+            _context.AddAsync(forum);
+            return _context.SaveChangesAsync();
         }
 
         public Task Delete(int forumId)
         {
-            return _context.Forums.FirstOrDefaultAsync(forum => forum.Id == forumId);
+           var task= _context.Forums
+                .FirstOrDefaultAsync(forum => forum.Id == forumId);
+
+            _context.Remove(task);
+
+           return _context.SaveChangesAsync();
+           
         }
 
         public IEnumerable<Forum> GetAll()
@@ -47,12 +54,24 @@ namespace LambdaForums.Service
 
         public Task UpdateForumDescription(int forumId, string newDescription)
         {
-            throw new NotImplementedException();
+            string task = _context.Forums
+                .FirstOrDefault(forum => forum.Id == forumId)
+                .Description = newDescription;
+
+            _context.Update(task);
+
+            return _context.SaveChangesAsync();
         }
 
         public Task UpdateForumTitle(int forumId, string newTitle)
         {
-            throw new NotImplementedException();
+            string task = _context.Forums
+                .FirstOrDefault(forum => forum.Id == forumId)
+                .Title = newTitle;
+
+            _context.Update(task);
+
+            return _context.SaveChangesAsync();
         }
     }
 }
