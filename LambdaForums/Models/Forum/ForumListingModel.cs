@@ -1,7 +1,6 @@
-﻿using System;
+﻿using LamdaForums.Data.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LambdaForums.Models.Forum
 {
@@ -12,5 +11,7 @@ namespace LambdaForums.Models.Forum
         public string Description { get; set; }
         public DateTime Created { get; set; }
         public string ImageUrl { get; set; }
+       
+       
     }
 }

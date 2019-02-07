@@ -2,7 +2,6 @@
 using LamdaForums.Data;
 using LamdaForums.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,19 +18,19 @@ namespace LambdaForums.Service
 
         public Task Create(Forum forum)
         {
-            _context.AddAsync(forum);
+            _context.Forums.Add(forum);
             return _context.SaveChangesAsync();
         }
 
         public Task Delete(int forumId)
         {
-           var task= _context.Forums
-                .FirstOrDefaultAsync(forum => forum.Id == forumId);
+            var task = _context.Forums
+                 .FirstOrDefault(forum => forum.Id == forumId);
 
-            _context.Remove(task);
+            _context.Forums.Remove(task);
 
-           return _context.SaveChangesAsync();
-           
+            return _context.SaveChangesAsync();
+
         }
 
         public IEnumerable<Forum> GetAll()
@@ -48,28 +47,29 @@ namespace LambdaForums.Service
         public Forum GetById(int id)
         {
             return _context.Forums
-                .Include(forum=> forum.Posts)
-                .FirstOrDefault(forum => forum.Id == id);
+                .Where(forum => forum.Id == id)
+                .Include(f => f.Posts).ThenInclude(g => g.Replies)
+                .Include(f => f.Posts).ThenInclude(g => g.User)
+                .FirstOrDefault();
         }
 
         public Task UpdateForumDescription(int forumId, string newDescription)
         {
-            string task = _context.Forums
-                .FirstOrDefault(forum => forum.Id == forumId)
-                .Description = newDescription;
+            var task = GetById(forumId);
+            task.Description = newDescription;
 
-            _context.Update(task);
+            _context.Forums.Update(task);
 
             return _context.SaveChangesAsync();
         }
 
         public Task UpdateForumTitle(int forumId, string newTitle)
         {
-            string task = _context.Forums
-                .FirstOrDefault(forum => forum.Id == forumId)
-                .Title = newTitle;
+            var task = GetById(forumId);
 
-            _context.Update(task);
+            task.Title = newTitle;
+
+            _context.Forums.Update(task);
 
             return _context.SaveChangesAsync();
         }
